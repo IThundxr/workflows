@@ -65,7 +65,7 @@ jobs:
         run: ./gradlew publish
 
       - name: Publish
-        if: inputs.is-release && inputs.release-task != ""
+        if: inputs.is-release
         env:
           MODRINTH_TOKEN: ${{ secrets.modrinth-token }}
           CURSEFORGE_TOKEN: ${{ secrets.curseforge-token }}
