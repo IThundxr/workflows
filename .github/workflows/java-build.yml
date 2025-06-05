@@ -52,9 +52,6 @@ jobs:
         with:
           cache-disabled: ${{ inputs.is-release }}
 
-      - name: Validate Gradle Wrapper Integrity
-        uses: gradle/actions/wrapper-validation@v4
-
       - name: Build
         run: ./gradlew build
         
