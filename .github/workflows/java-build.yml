@@ -50,7 +50,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          cache-disabled: ${{ inputs.is-release }}
+          cache-disabled: inputs.is-release
 
       - name: Build
         run: ./gradlew build
