@@ -1,0 +1,60 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: true
+        type: number
+      uses-loom:
+        required: false
+        type: boolean
+        default: false
+      publish-to-maven:
+        required: false
+        type: boolean
+        default: false
+      is-release:
+        required: false
+        type: boolean
+        default: false
+      release-task:
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java ${{ inputs.java-version }}
+        run: echo "JAVA_HOME=$JAVA_HOME_${{ inputs.java-version }}_X64" >> "$GITHUB_ENV"
+        
+      - name: Loom Cache
+        if: inputs.uses-loom
+        uses: actions/cache@v4
+        with:
+          path: "**/.gradle/loom-cache"
+          key: "${{ runner.os }}-gradle-${{ hashFiles('**/libs.versions.*', '**/*.gradle*', '**/gradle-wrapper.properties') }}"
+          restore-keys: "${{ runner.os }}-gradle-"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: ${{ inputs.is-release }}
+
+      - name: Validate Gradle Wrapper Integrity
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Build
+        run: ./gradlew build
+        
+      - name: Publish to Maven
+        if: inputs.publish-to-maven
+        run: ./gradlew publish
+
+      - name: Publish
+        if: inputs.is-release && inputs.release-task != ""
+        run: ./gradlew ${{ inputs.release-task }}
