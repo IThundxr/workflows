@@ -21,6 +21,13 @@ on:
       release-task:
         required: false
         type: string
+    secrets:
+      modrinth-token:
+        required: false
+      curseforge-token:
+        required: false
+      maven-token:
+        required: false
 
 jobs:
   build:
@@ -53,8 +60,14 @@ jobs:
         
       - name: Publish to Maven
         if: inputs.publish-to-maven
+        env:
+          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
         run: ./gradlew publish
 
       - name: Publish
         if: inputs.is-release && inputs.release-task != ""
+        env:
+          MODRINTH_TOKEN: ${{ secrets.modrinth-token }}
+          CURSEFORGE_TOKEN: ${{ secrets.curseforge-token }}
+          MAVEN_TOKEN: ${{ secrets.maven-token }}
         run: ./gradlew ${{ inputs.release-task }}
