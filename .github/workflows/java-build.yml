@@ -40,7 +40,7 @@ jobs:
         run: echo "JAVA_HOME=$JAVA_HOME_${{ inputs.java-version }}_X64" >> "$GITHUB_ENV"
         
       - name: Loom Cache
-        if: inputs.uses-loom
+        if: ${{ inputs.uses-loom }}
         uses: actions/cache@v4
         with:
           path: "**/.gradle/loom-cache"
@@ -57,13 +57,13 @@ jobs:
         run: ./gradlew build
         
       - name: Publish to Maven
-        if: inputs.publish-to-maven
+        if: ${{ inputs.publish-to-maven }}
         env:
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
         run: ./gradlew publish
 
       - name: Publish
-        if: inputs.is-release
+        if: ${{ inputs.is-release }}
         env:
           MODRINTH_TOKEN: ${{ secrets.modrinth-token }}
           CURSEFORGE_TOKEN: ${{ secrets.curseforge-token }}
