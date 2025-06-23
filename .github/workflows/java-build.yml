@@ -59,7 +59,7 @@ jobs:
       - name: Publish to Maven
         if: ${{ inputs.publish-to-maven }}
         env:
-          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+          MAVEN_TOKEN: ${{ secrets.maven-token }}
         run: ./gradlew publish
 
       - name: Publish
