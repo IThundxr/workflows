@@ -6,6 +6,10 @@ on:
       java-version:
         required: true
         type: number
+      run-gametests:
+        required: false
+        type: boolean
+        default: false
       uses-loom:
         required: false
         type: boolean
@@ -38,7 +42,7 @@ jobs:
 
       - name: Setup Java ${{ inputs.java-version }}
         run: echo "JAVA_HOME=$JAVA_HOME_${{ inputs.java-version }}_X64" >> "$GITHUB_ENV"
-        
+
       - name: Loom Cache
         if: ${{ inputs.uses-loom }}
         uses: actions/cache@v4
@@ -55,7 +59,11 @@ jobs:
 
       - name: Build
         run: ./gradlew build
-        
+
+      - name: Run Gametests
+        if: ${{ inputs.run-gametests }}
+        run: ./gradlew runGameTestServer
+
       - name: Publish to Maven
         if: ${{ inputs.publish-to-maven }}
         env:
