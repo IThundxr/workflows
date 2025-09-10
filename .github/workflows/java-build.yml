@@ -55,7 +55,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-disabled: ${{ inputs.is-release }}
-          cache-read-only: false
+          cache-read-only: ${{ github.event_name == "pull_request" }}
 
       - name: Build
         run: ./gradlew build
